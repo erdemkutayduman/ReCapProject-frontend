@@ -2,7 +2,6 @@ import { Rental } from './../models/entities/rental';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ListResponseModel } from '../models/responses/list-response-model';
 import { ItemResponseModel } from '../models/responses/item-response-model';
 
 @Injectable({
