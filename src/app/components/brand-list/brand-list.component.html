@@ -19,8 +19,8 @@
         <tr *ngFor="let brand of brands">
           <td>{{brand.brandId}}</td>
           <td>{{brand.brandName}}</td>
-          <td><button routerLink="/brands/update/{{brand.brandId}}" class="btn btn-warning" style="border-radius: 50px;">Update</button></td>
-          <td><button (click)="deleteBrand(brand)" class="btn btn-danger" style="border-radius: 50px;">Delete</button></td>
+          <td><button routerLink="/brands/update/{{brand.brandId}}" class="col-md-10 btn btn-warning"  style="border-radius: 50px;">Update</button></td>
+          <td><button (click)="deleteBrand(brand)" class="col-md-10 btn btn-danger" style="border-radius: 50px;">Delete</button></td>
         </tr>
       </tbody>
     </table>
