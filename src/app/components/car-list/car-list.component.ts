@@ -31,5 +31,10 @@ export class CarListComponent implements OnInit {
       setTimeout(() => { window.location.reload(); }, 1500);
     })
   }
-
+  refresh(){
+  
+  
+    window.location.reload();
+    
+  }
 }

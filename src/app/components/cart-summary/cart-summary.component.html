@@ -7,7 +7,7 @@
     <i class="fa" style="font-size:24px">&#xf07a;</i>&nbsp;&nbsp;
     <span class='badge badge-warning' id='lblCartCount'> {{cartItems.length}} </span>
   </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> (click)="refresh()"
     <a class="dropdown-item" *ngFor="let cartItem of cartItems">
       <div class="row">
         <div class="col-sm-3">
@@ -21,6 +21,6 @@
         </div>
       </div>
     </a>
-    <a class="dropdown-item"> <b>View cart</b> </a>
+    <a class="dropdown-item" > <b>View cart</b> </a>
   </div>
 </div>

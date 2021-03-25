@@ -81,5 +81,10 @@ export class CarDetailComponent implements OnInit {
       }
     )
   }
-
+  refresh(){
+  
+  
+    window.location.reload();
+    
+  }
 }

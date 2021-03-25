@@ -1,6 +1,6 @@
 <div class="form-group">
   <input class="form-control" placeholder="Search Car" [(ngModel)]="carFilterText" />
-  <small class="form-text text-muted" *ngIf="carFilterText"> Se {{ carFilterText }} </small>
+  <small class="form-text text-muted" *ngIf="carFilterText"> Searching {{ carFilterText }} </small>
 </div>&nbsp;
 
 <div class="row" *ngIf="carDetails.length == 0">
@@ -14,7 +14,7 @@
 <div class="row" *ngIf="dataLoaded==true">
   <div class="col-md-4" *ngFor="let cardetail of carDetails | carFilter:carFilterText">
     <div class="card">
-      <img src="{{cardetail.imagePaths[0].imagePath}}" class="card-img-top" width="auto" height="150px">
+      <img src="{{cardetail.imagePaths[0].imagePath}}" class="card-img-top" width="150px" height="150px">
       <div class="card-body" style="background-color:rgb(0, 225, 255);">
         <h5 class="card-title"> <b>  {{cardetail.description}} - {{cardetail.modelYear}} </b></h5>
       </div>

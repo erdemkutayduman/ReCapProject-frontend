@@ -65,8 +65,8 @@ export class CarUpdateComponent implements OnInit {
       brandId:["",Validators.required],
       colorId:["",Validators.required],
       carName:["",Validators.required],
-      dailyPrice:["",Validators.required],
       modelYear:["",Validators.required],
+      dailyPrice:["",Validators.required],      
       description:["",Validators.required]
     })
   }
@@ -75,8 +75,7 @@ export class CarUpdateComponent implements OnInit {
     this.carUpdateForm.patchValue({ carId: this.car.carId })
     if(this.carUpdateForm.valid){
       let carModel = Object.assign({},this.carUpdateForm.value);
-      this.carService.updateCar(carModel).subscribe(
-        response => {
+      this.carService.updateCar(carModel).subscribe(response => {
         this.toastrService.success(response.message,"Successful")
         },
         responseError => {
@@ -91,5 +90,10 @@ export class CarUpdateComponent implements OnInit {
       this.toastrService.error("The form is missing.","Attention!")
     }
   }
-
+  refresh(){
+  
+  
+    window.location.reload();
+    
+  }
 }

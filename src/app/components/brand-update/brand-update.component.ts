@@ -62,5 +62,11 @@ export class BrandUpdateComponent implements OnInit {
       this.toastrService.error("The form is missing.","Attention!")
     }
   }
+  refresh(){
+  
+  
+    window.location.reload();
+    
+  }
 
 }

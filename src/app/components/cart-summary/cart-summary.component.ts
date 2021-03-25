@@ -28,5 +28,10 @@ export class CartSummaryComponent implements OnInit {
     this.cartService.removeFromCart(car);
     this.toastrService.error(car.carName + " deleted from cart.")
   }
-
+  refresh(){
+  
+  
+    window.location.reload();
+    
+  }
 }
