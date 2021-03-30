@@ -40,7 +40,7 @@ export class PaymentComponent implements OnInit {
   }
 
   addPayment(form:NgForm) {
-    this.paymentModel.RentalId = 1;
+    this.paymentModel.rentalId = 1;
     this.paymentService.addPayment(this.paymentModel).subscribe(
       res => { this.toastrService.success("Payment is successful."); },
       err => { this.toastrService.error("Payment error."); }
