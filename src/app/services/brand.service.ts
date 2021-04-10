@@ -1,38 +1,50 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ListResponseModel } from '../models/responses/list-response-model';
-import { Brand } from '../models/entities/brand';
-import { ResponseModel } from '../models/responses/response-model';
-import { ItemResponseModel } from '../models/responses/item-response-model';
+import { environment } from '../../environments/environment';
+import { Brand } from '../models/brand';
+import { ListResponseModel } from '../models/listResponseModel';
+import { ResponseModel } from '../models/responseModel';
+import { SingleResponseModel } from '../models/singleResponseModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BrandService {
+  apiControllerUrl = `${environment.apiUrl}/brands`;
 
-  apiUrl = "https://localhost:44322/api/brands";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  getBrands():Observable<ListResponseModel<Brand>> {
-    return this.httpClient.get<ListResponseModel<Brand>>(this.apiUrl + "/getall");
+  getBrands(): Observable<ListResponseModel<Brand>> {
+    return this.httpClient.get<ListResponseModel<Brand>>(
+      `${this.apiControllerUrl}/getall`
+    );
   }
 
-  getBrandById(brandId:number):Observable<ItemResponseModel<Brand>> {
-    return this.httpClient.get<ItemResponseModel<Brand>>(this.apiUrl + "/getbyid?brandId=" + brandId);
+  getBrandById(brandId: number): Observable<SingleResponseModel<Brand>> {
+    return this.httpClient.get<SingleResponseModel<Brand>>(
+      `${this.apiControllerUrl}/getbyid?id=${brandId}`
+    );
   }
 
-  addBrand(brand:Brand):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/add", brand)
+  add(brand: Brand): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/add`,
+      brand
+    );
   }
 
-  deleteBrand(brand:Brand):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/delete", brand)
+  update(brand: Brand): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/update`,
+      brand
+    );
   }
 
-  updateBrand(brand:Brand):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/update", brand)
+  delete(brand: Brand): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/delete`,
+      brand
+    );
   }
-
 }

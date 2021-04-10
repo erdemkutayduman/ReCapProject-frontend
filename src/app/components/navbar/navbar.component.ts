@@ -1,71 +1,18 @@
-import { CreditCard } from './../../models/entities/credit-card';
-import { CreditCardService } from './../../services/credit-card.service';
-import { RentalService } from 'src/app/services/rental.service';
-import { Rental } from './../../models/entities/rental';
-import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
-import { Payment } from 'src/app/models/entities/payment';
-import { PaymentService } from 'src/app/services/payment.service';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { Observable } from 'rxjs';
+import { UserDetail } from 'src/app/models/userDetail';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-payment',
-  templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.css']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss'],
 })
-export class PaymentComponent implements OnInit {
+export class NavbarComponent implements OnInit {
+  userDetail$: Observable<UserDetail | undefined> = this.authService
+    .userDetail$;
 
-  title = "Payment Screen"
-  rental:Rental;
-  paymentModel:Payment = new Payment();
-  totalPrice:any;
+  constructor(private authService: AuthService) {}
 
-  constructor(private paymentService:PaymentService,
-              private creditCardService:CreditCardService,
-              private rentalService:RentalService,
-              private localStorage:LocalStorageService,
-              private toastrService:ToastrService,
-              private activatedRoute:ActivatedRoute) { }
-
-  ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-      if(params["rentalId"] && params["totalPrice"]){
-        this.totalPrice = params["totalPrice"];
-        this.getRentalDetails(params["rentalId"]);
-      }
-    });
-  }
-
-  getRentalDetails(rentalId:Number) {
-    this.rentalService.getRental(rentalId).subscribe(response => {
-      this.rental = response.data;
-    })
-  }
-
-  addPayment(form:NgForm) {
-    this.paymentModel.rentalId = this.rental.rentalId;
-
-    if(this.paymentModel.saveCard == true) {
-
-      let creditCard:CreditCard = new CreditCard();
-      creditCard.userId = this.localStorage.get("userId") == null ? 0 : Number(this.localStorage.get("userId"));
-      creditCard.nameSurname = this.paymentModel.nameSurname;
-      creditCard.cardNumber = this.paymentModel.cardNumber;
-      creditCard.expirationDate = this.paymentModel.expirationDate;
-      creditCard.cvc = this.paymentModel.cvc;
-      this.creditCardService.addCreditCard(creditCard).subscribe(
-        res => { this.toastrService.success("Credit card is saved."); },
-        err => { this.toastrService.info("Credit card is already exists"); }
-      )
-
-    }
-
-    this.paymentService.addPayment(this.paymentModel).subscribe(
-      res => { this.toastrService.success("Payment is successful."); },
-      err => { this.toastrService.error("Payment error."); }
-    )
-  }
-
+  ngOnInit(): void {}
 }

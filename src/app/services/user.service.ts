@@ -1,25 +1,39 @@
-import { UserDetail } from './../models/entities/user-detail';
-import { Injectable } from '@angular/core';
-import { ItemResponseModel } from '../models/responses/item-response-model';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ResponseModel } from '../models/responses/response-model';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ResponseModel } from '../models/responseModel';
+import { SingleResponseModel } from '../models/singleResponseModel';
+import { UserDetail } from '../models/userDetail';
+import { UserDetailUpdateModel } from '../models/userDetailUpdateModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
+  apiControllerUrl = `${environment.apiUrl}/users`;
 
-  apiUrl = "https://localhost:44322/api/users";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  getUserByEmail(email:string):Observable<ItemResponseModel<UserDetail>> {
-    return this.httpClient.get<ItemResponseModel<UserDetail>>(this.apiUrl + "/getbyemail?email=" + email);
+  getUserDetailByEmail(
+    userMail: string
+  ): Observable<SingleResponseModel<UserDetail>> {
+    return this.httpClient.get<SingleResponseModel<UserDetail>>(
+      `${this.apiControllerUrl}/getbyemail`,
+      {
+        params: {
+          userMail: userMail,
+        },
+      }
+    );
   }
 
-  updateUserDetail(user:UserDetail):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/updatedetails", user)
+  updateUserDetails(
+    userDetailUpdateModel: UserDetailUpdateModel
+  ): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/updateuserdetails`,
+      userDetailUpdateModel
+    );
   }
-
 }

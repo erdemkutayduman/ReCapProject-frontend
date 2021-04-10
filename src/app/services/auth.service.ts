@@ -1,47 +1,79 @@
-import { UserPassword } from './../models/entities/user-password';
-import { LocalStorageService } from './local-storage.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginModel } from '../models/entities/login-model';
-import { SingleResponseModel } from '../models/responses/single-response-model';
-import { TokenModel } from '../models/entities/token-model';
-import { RegisterModel } from '../models/entities/register-model';
-import { ResponseModel } from '../models/responses/response-model';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { LoginModel } from '../models/loginModel';
+import { RegisterModel } from '../models/registerModel';
+import { ResponseModel } from '../models/responseModel';
+import { SingleResponseModel } from '../models/singleResponseModel';
+import { TokenModel } from '../models/tokenModel';
+import { UserDetail } from '../models/userDetail';
+import { AppState } from '../store/app.reducer';
+import { deleteUserDetail, setUserDetail } from '../store/auth/auth.actions';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  apiControllerUrl: string = `${environment.apiUrl}/auth`;
+  userDetail$: Observable<UserDetail | undefined> = this.store
+    .select((s) => s.appAuth)
+    .pipe(map((b) => b.userDetail));
 
-  apiUrl = 'https://localhost:44322/api/auth/';
+  constructor(
+    private httpClient: HttpClient,
+    private localStorageService: LocalStorageService,
+    private store: Store<AppState>
+  ) {}
 
-  constructor(private httpClient:HttpClient,
-              private localStorage:LocalStorageService) { }
-
-  register(registerModel:RegisterModel) {
-    return this.httpClient.post<SingleResponseModel<TokenModel>>(this.apiUrl + "register", registerModel)
+  login(loginModel: LoginModel): Observable<SingleResponseModel<TokenModel>> {
+    return this.httpClient.post<SingleResponseModel<TokenModel>>(
+      `${this.apiControllerUrl}/login`,
+      loginModel
+    );
   }
 
-  login(loginModel:LoginModel){
-    return this.httpClient.post<SingleResponseModel<TokenModel>>(this.apiUrl + "login", loginModel)
+  register(
+    registerModel: RegisterModel
+  ): Observable<SingleResponseModel<TokenModel>> {
+    return this.httpClient.post<SingleResponseModel<TokenModel>>(
+      `${this.apiControllerUrl}/register`,
+      registerModel
+    );
   }
 
   logout() {
-    this.localStorage.remove("token")
-    return true;
+    this.localStorageService.remove('tokenModel');
+    this.localStorageService.remove('userEmail');
+    this.deleteUserDetail();
   }
 
-  isAuthenticated() {
-    if(this.localStorage.get("token")) {
-      return true;
-    }
-    else {
-      return false;
-    }
+  isAuthenticated(
+    userEmail?: string | null,
+    requiredRoles?: string[]
+  ): Observable<ResponseModel> {
+    return this.httpClient.get<ResponseModel>(
+      `${this.apiControllerUrl}/isauthenticated`,
+      {
+        params:
+          userEmail && requiredRoles
+            ? {
+                userEmail: userEmail,
+                requiredRoles: requiredRoles.join(','),
+              }
+            : {},
+      }
+    );
   }
 
-  updateUserPassword(userPassword:UserPassword) {
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "changepassword", userPassword)
+  setUserDetail(userDetail: UserDetail) {
+    this.store.dispatch(setUserDetail({ userDetail: userDetail }));
   }
 
+  deleteUserDetail() {
+    this.store.dispatch(deleteUserDetail());
+  }
 }

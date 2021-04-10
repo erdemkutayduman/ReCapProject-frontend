@@ -1,59 +1,82 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light py-5">
+  <div class="container-fluid container-md">
+    <a class="navbar-brand" routerLink="">ReCap Car Project</a>
 
-  <a class="navbar-brand" href="#">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;Rent A Car</a>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="cars">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="carlist">Cars</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="brandlist">Brands</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="colorlist">Colors</a>
-      </li>
-    </ul>
-    <span class="my-2 my-lg-0">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item" *ngIf="isLoggedIn() == false">
-          <a class="nav-link" routerLink="register">Register</a>
-        </li>
-        <li class="nav-item" *ngIf="isLoggedIn() == false">
-          <a class="nav-link" routerLink="login">Login</a>
-        </li>
-        <div class="dropdown dropleft" *ngIf="isLoggedIn() == true">
-          <li class="nav-item">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {{ userDetails.firstName + " " + userDetails.lastName }}
-                      <span class="label label-warning"> FS: {{ customerUser.creditScore }} </span>
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" routerLink="/updatedetails"><i class="fa fa-edit"></i>&nbsp;Update Account Information</a>
-                <a class="dropdown-item" routerLink="/updatepassword"><i class="fa fa-lock"></i>&nbsp;&nbsp;Change Password</a>
-                <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
-              </div>
-          </li>
-
-        </div>
+    <div
+      id="navbar-links"
+      class="collapse navbar-collapse ms-5 order-2 order-lg-0"
+    >
+      <ul class="navbar-nav text-center me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <app-cart-summary></app-cart-summary>
+          <a
+            class="nav-link"
+            aria-current="page"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Rent</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="cars" routerLinkActive="active"
+            >Cars</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Service</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Support</a>
         </li>
       </ul>
-    </span>
-  </div>
+    </div>
 
+    <div
+      *ngIf="!(userDetail$ | async)"
+      class="d-flex justify-content-center order-0 order-lg-1"
+    >
+      <a class="btn mx-2 py-2 px-4 rounded-1 bg-transparent" routerLink="signup"
+        >Sign Up</a
+      >
+      <a
+        class="btn btn-primary mx-2 py-2 px-4 rounded-1 shadow"
+        routerLink="login"
+        >Log in</a
+      >
+    </div>
+
+    <div *ngIf="userDetail$ | async" class="dropdown">
+      <button
+        class="btn btn-light dropdown-toggle"
+        type="button"
+        id="accountMenu"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {{ (userDetail$ | async)?.firstName }}
+        {{ (userDetail$ | async)?.lastName }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="accountMenu">
+        <li>
+          <a routerLink="account" class="dropdown-item">Account Settings</a>
+        </li>
+        <li>
+          <a routerLink="wallet" class="dropdown-item">Wallet</a>
+        </li>
+        <li><a routerLink="logout" class="dropdown-item">Log out</a></li>
+      </ul>
+    </div>
+
+    <button
+      class="navbar-toggler order-1 order-lg-2"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbar-links"
+      aria-controls="navbar-links"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
 </nav>

@@ -1,29 +1,56 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ListResponseModel } from '../models/responses/list-response-model';
-import { CreditCard } from 'src/app/models/entities/credit-card';
-import { ResponseModel } from '../models/responses/response-model';
+import { environment } from 'src/environments/environment';
+import { CreditCard } from '../models/creditCard';
+import { ListResponseModel } from '../models/listResponseModel';
+import { ResponseModel } from '../models/responseModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CreditCardService {
+  apiControllerUrl = `${environment.apiUrl}/creditcards`;
 
-  apiUrl ="https://localhost:44322/api/creditcards";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  getCreditCardsByCustomerId(customerId:number):Observable<ListResponseModel<CreditCard>> {
-    return this.httpClient.get<ListResponseModel<CreditCard>>(this.apiUrl + "/getbycustomerid?customerId=" + customerId);
+  getAllByCustomerId(
+    customerId: number
+  ): Observable<ListResponseModel<CreditCard>> {
+    return this.httpClient.get<ListResponseModel<CreditCard>>(
+      `${this.apiControllerUrl}/getbyid`,
+      {
+        params: {
+          customerId: customerId.toString(),
+        },
+      }
+    );
   }
 
-  addCreditCard(creditCard:CreditCard):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/add", creditCard)
+  add(creditCard: CreditCard): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/add`,
+      creditCard
+    );
   }
 
-  deleteCreditCard(creditCard:CreditCard):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/delete", creditCard)
+  delete(creditCard: CreditCard): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/delete`,
+      creditCard
+    );
   }
 
+  update(creditCard: CreditCard): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/update`,
+      creditCard
+    );
+  }
+
+  getAllCards(): Observable<ListResponseModel<CreditCard>> {
+    return this.httpClient.get<ListResponseModel<CreditCard>>(
+      `${this.apiControllerUrl}/getall`
+    );
+  }
 }

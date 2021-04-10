@@ -1,19 +1,18 @@
-import { Payment } from './../models/entities/payment';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ResponseModel } from '../models/responseModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentService {
+  controllerUrl = `${environment.apiUrl}/payment`;
 
-  apiUrl = "https://localhost:44322/api/payments";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  addPayment(payment:Payment):Observable<Payment> {
-    return this.httpClient.post<Payment>(this.apiUrl + "/add", payment)
+  payment(): Observable<ResponseModel> {
+    return this.httpClient.get<ResponseModel>(`${this.controllerUrl}/payment`);
   }
-
 }

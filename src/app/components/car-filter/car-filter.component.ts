@@ -1,79 +1,67 @@
-import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { Brand } from 'src/app/models/entities/brand';
-import { Color } from 'src/app/models/entities/color';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Brand } from 'src/app/models/brand';
+import { Color } from 'src/app/models/color';
 import { BrandService } from 'src/app/services/brand.service';
 import { ColorService } from 'src/app/services/color.service';
-
 
 @Component({
   selector: 'app-car-filter',
   templateUrl: './car-filter.component.html',
-  styleUrls: ['./car-filter.component.css'],
+  styleUrls: ['./car-filter.component.scss'],
 })
 export class CarFilterComponent implements OnInit {
-
-  title = "Filter"
   brands: Brand[] = [];
   colors: Color[] = [];
-  brandId: Number;
-  brandFilterText:string
-  colorId: Number;
-  colorFilterText:string;
+  activeBrandName?: string = '';
+  activeColorName?: string = '';
+  brandFilterText: string = '';
+  colorFilterText: string = '';
+  carFilterText: string = '';
 
-  constructor(private brandService:BrandService,
-              private colorService:ColorService,
-              private router:Router) {}
+  @Output() carFilterTextEvent = new EventEmitter<string>();
+
+  @Input() isCompact: boolean = false;
+
+  constructor(
+    private brandService: BrandService,
+    private colorService: ColorService,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.getBrands();
     this.getColors();
+    this.getActivesFromParams();
+  }
+  getActivesFromParams() {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      if (params['brand']) this.activeBrandName = params['brand'];
+      if (params['color']) this.activeColorName = params['color'];
+    });
   }
 
   getBrands() {
-    this.brandService.getBrands().subscribe((response) => {
-      this.brands = response.data;
-    });
+    this.brandService
+      .getBrands()
+      .subscribe((response) => (this.brands = response.data));
   }
 
   getColors() {
-    this.colorService.getColors().subscribe((response) => {
-      this.colors = response.data;
-    });
+    this.colorService
+      .getColors()
+      .subscribe((response) => (this.colors = response.data));
   }
 
-  getSelectedBrand(brandId: Number) {
-    if (this.brandId == brandId) {
-      return true;
-    }
-    else {
-      return false;
-    }
+  sendCarFilterText() {
+    this.carFilterTextEvent.emit(this.carFilterText);
   }
 
-  getSelectedColor(colorId: Number) {
-    if (this.colorId == colorId) {
-      return true;
-    }
-    else {
-      return false;
-    }
+  isBrandSelected(brandName?: string): boolean {
+    return this.activeBrandName === brandName;
   }
 
-  applyFilter() {
-    if(this.brandId != null && this.colorId != null) {
-      this.router.navigate(['/cars/filter/' + this.brandId + "/" + this.colorId])
-    }
-    else if(this.colorId != null) {
-      this.router.navigate(['/cars/filterColor/' + this.colorId])
-    }
-    else if(this.brandId != null) {
-      this.router.navigate(['/cars/filterBrand/' + this.brandId])
-    }
+  isColorSelected(colorName?: string): boolean {
+    return this.activeColorName === colorName;
   }
-
-  clearFilter() {
-    this.router.navigate(['/cars'])
-  }
-
 }

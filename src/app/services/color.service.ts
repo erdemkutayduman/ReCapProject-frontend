@@ -1,38 +1,50 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ListResponseModel } from '../models/responses/list-response-model';
-import { Color } from 'src/app/models/entities/color';
-import { ResponseModel } from '../models/responses/response-model';
-import { ItemResponseModel } from '../models/responses/item-response-model';
+import { environment } from 'src/environments/environment';
+import { Color } from '../models/color';
+import { ListResponseModel } from '../models/listResponseModel';
+import { ResponseModel } from '../models/responseModel';
+import { SingleResponseModel } from '../models/singleResponseModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ColorService {
+  apiControllerUrl = `${environment.apiUrl}/colors`;
 
-  apiUrl ="https://localhost:44322/api/colors";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  getColors():Observable<ListResponseModel<Color>> {
-    return this.httpClient.get<ListResponseModel<Color>>(this.apiUrl + "/getall");
+  getColors(): Observable<ListResponseModel<Color>> {
+    return this.httpClient.get<ListResponseModel<Color>>(
+      `${this.apiControllerUrl}/getall`
+    );
   }
 
-  getColorById(colorId:number):Observable<ItemResponseModel<Color>> {
-    return this.httpClient.get<ItemResponseModel<Color>>(this.apiUrl + "/getbyid?colorId=" + colorId);
+  getColorById(colorId: number): Observable<SingleResponseModel<Color>> {
+    return this.httpClient.get<SingleResponseModel<Color>>(
+      `${this.apiControllerUrl}/getbyid?id=${colorId}`
+    );
   }
 
-  addColor(color:Color):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/add", color)
+  add(color: Color): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/add`,
+      color
+    );
   }
 
-  deleteColor(color:Color):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/delete", color)
+  update(color: Color): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/update`,
+      color
+    );
   }
 
-  updateColor(color:Color):Observable<ResponseModel>{
-    return this.httpClient.post<ResponseModel>(this.apiUrl + "/update", color)
+  delete(color: Color): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/delete`,
+      color
+    );
   }
-
 }

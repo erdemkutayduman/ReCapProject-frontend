@@ -1,32 +1,51 @@
-import { Rental } from './../models/entities/rental';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ListResponseModel } from '../models/responses/list-response-model';
-import { ItemResponseModel } from '../models/responses/item-response-model';
+import { environment } from 'src/environments/environment';
+import { ListResponseModel } from '../models/listResponseModel';
+import { Rental } from '../models/rental';
+import { ResponseModel } from '../models/responseModel';
+import { SingleResponseModel } from '../models/singleResponseModel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RentalService {
+  apiControllerUrl = `${environment.apiUrl}/rentals`;
+  rentalCheckout?: Rental;
 
-  apiUrl = "https://localhost:44322/api/rentals";
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient:HttpClient) { }
-
-  getRental(rentalId:Number):Observable<ItemResponseModel<Rental>> {
-    return this.httpClient.get<ItemResponseModel<Rental>>(this.apiUrl + "/getbyid?rentalId=" + rentalId);
+  getRentals(): Observable<ListResponseModel<Rental>> {
+    return this.httpClient.get<ListResponseModel<Rental>>(
+      `${this.apiControllerUrl}/getall`
+    );
   }
 
-  getIdByRentalInfos(carId:number, customerId:number, rentDate:Date, returnDate:Date):Observable<ItemResponseModel<Rental>> {
-    return this.httpClient.get<ItemResponseModel<Rental>>(this.apiUrl + "/getidbyrentalinfos?carId=" + carId
-                                                                                         + "&customerId=" + customerId
-                                                                                         + "&rentDate=" + rentDate
-                                                                                         + "&returnDate=" + returnDate);
+  getRentalDetails(rental: Rental): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/getrentaldetails`,
+      rental
+    );
   }
 
-  addRental(rental:Rental):Observable<Rental> {
-    return this.httpClient.post<Rental>(this.apiUrl + "/add", rental)
+  getIdByRentalDetails(rental: Rental): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/getidbyrentaldetails`,
+      rental
+    );
   }
 
+  add(rental: Rental): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiControllerUrl}/add`,
+      rental
+    );
+  }
+
+  getRentalById(rentalId: number): Observable<SingleResponseModel<Rental>> {
+    return this.httpClient.get<SingleResponseModel<Rental>>(
+      `${this.apiControllerUrl}/getbyid?id=${rentalId}`
+    );
+  }
 }
